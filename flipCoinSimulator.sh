@@ -1,7 +1,6 @@
 #! /bin/bash
 
 #Problem Statement : Flip coin simulation that displays winning percentage of Head or Tail in a Singlet, Doublet and Triplet
-#
 
 #Name : Rohit Machale
 
@@ -81,15 +80,75 @@ function twoFlip() {
 echo HH percent: $( percentage $doubleHeadCount ), TT percent: $( percentage $doubleTailCount ), HT percent: $( percentage $headThenTailCount ), TH percent: $( percentage $tailThenHeadCount ) 
 }
 
+#Triplet
+
+function threeFlip() {
+	declare -A triplet
+	triplet=( [HHH]=0 [TTT]=0 [HHT]=0 [TTH]=0 [HTH]=0 [THT]=0 [THH]=0 [HTT]=0 )
+	noFlip=$1
+	tripleHeadCount=0
+	tripleTailCount=0
+	headHeadTail=0
+	tailTailHead=0
+	headTailHead=0
+	tailHeadTail=0
+	tailHeadHead=0
+	headTailTail=0
+	for (( k=0; k<$noFlip; k++ ))
+	do
+		result1=$( flipCoin )
+		result2=$( flipCoin )
+		result3=$( flipCoin )
+		result=$result1$result2$result3
+		if [ $result == HHH ]
+		then
+			(( tripleHeadCount++ ))
+			triplet[HHH]=$tripleHeadCount
+		elif [ $result == TTT ]
+		then
+			(( tripleTailCount++ ))
+			triplet[TTT]=$tripleTailCount
+		elif [ $result == HHT ]
+		then
+			(( headHeadTail++ ))
+			triplet[HHT]=$headHeadTail
+		elif [ $result == TTH ]
+		then
+			(( tailTailHead++ ))
+			triplet[TTH]=$tailTailHead
+		elif [ $result == HTH ]
+		then
+			(( headTailHead++ ))
+			triplet[HTH]=$headTailHead
+		elif [ $result == THT ]
+		then
+			(( tailHeadTail++ ))
+			triplet[THT]=$tailHeadTail
+		elif [ $result == THH ]
+		then
+			(( tailHeadHead++ ))
+			triplet[THH]=$tailHeadHead
+		else
+			(( headTailTail++ ))
+			triplet[HTT]=$headTailTail
+		fi
+	done
+
+	echo HHH percent: $( percentage $tripleHeadCount $noFlip ), TTT percent: $( percentage $tripleTailCount $noFlip ), HHT percent: $( percentage $headHeadTail $noFlip ), TTH percent: $( percentage $tailTailHead $noFlip ), HTH percent: $( percentage $headTailHead $noFlip ), THT percent: $( percentage $tailHeadTail $noFlip ) , THH percent: $( percentage $tailHeadHead $noFlip ), HTT percent: $( percentage $headTailTail $noFlip )
+}
+
 echo "----------Flip Coin Simulation----------"
-echo -e "Enter 1 to flip one coin \nEnter 2 to flip two coin"
+echo -e "Enter 1 to flip one coin \nEnter 2 to flip two coin \nEnter 3 to flip three coin"
 read -p "Enter choice: " choice
+read -p "How many times you want to flip the coin: " timesFlip
 
 case $choice in
 	1)
-		oneFlip;;
+		oneFlip $timesFlip;;
 	2)
-		twoFlip;;
+		twoFlip $timesFlip;;
+	3)
+		threeFlip $timesFlip;;
 	*)
 		echo "Invalid choice!!";;
 esac 
